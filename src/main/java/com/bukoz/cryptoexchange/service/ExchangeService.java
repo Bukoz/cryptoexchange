@@ -1,6 +1,5 @@
 package com.bukoz.cryptoexchange.service;
 
-import com.bukoz.cryptoexchange.externalapi.service.ExternalApiService;
 import com.bukoz.cryptoexchange.model.ExchangeRequest;
 import com.bukoz.cryptoexchange.model.ExchangeResponse;
 import com.bukoz.cryptoexchange.util.FeeCalculator;

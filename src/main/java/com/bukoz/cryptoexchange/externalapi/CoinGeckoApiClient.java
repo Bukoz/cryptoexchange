@@ -1,6 +1,6 @@
-package com.bukoz.cryptoexchange.externalapi.client;
+package com.bukoz.cryptoexchange.externalapi;
 
-import com.bukoz.cryptoexchange.externalapi.exception.ExternalApiException;
+import com.bukoz.cryptoexchange.exception.external.ExternalApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

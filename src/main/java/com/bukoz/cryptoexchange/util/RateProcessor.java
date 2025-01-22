@@ -1,4 +1,4 @@
-package com.bukoz.cryptoexchange.externalapi.util;
+package com.bukoz.cryptoexchange.util;
 
 import org.springframework.stereotype.Component;
 

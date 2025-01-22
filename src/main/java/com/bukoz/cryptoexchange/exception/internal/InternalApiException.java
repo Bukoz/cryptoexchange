@@ -1,4 +1,4 @@
-package com.bukoz.cryptoexchange.exception;
+package com.bukoz.cryptoexchange.exception.internal;
 
 public class InternalApiException extends RuntimeException {
 

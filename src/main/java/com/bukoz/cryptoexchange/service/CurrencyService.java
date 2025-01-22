@@ -1,6 +1,5 @@
 package com.bukoz.cryptoexchange.service;
 
-import com.bukoz.cryptoexchange.externalapi.service.ExternalApiService;
 import com.bukoz.cryptoexchange.model.CurrencyRate;
 import org.springframework.stereotype.Service;
 

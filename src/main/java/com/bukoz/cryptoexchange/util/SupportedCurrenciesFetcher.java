@@ -1,4 +1,4 @@
-package com.bukoz.cryptoexchange.externalapi.util;
+package com.bukoz.cryptoexchange.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

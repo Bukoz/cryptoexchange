@@ -1,4 +1,4 @@
-package com.bukoz.cryptoexchange.externalapi.service;
+package com.bukoz.cryptoexchange.service;
 
 import com.bukoz.cryptoexchange.model.CurrencyRate;
 

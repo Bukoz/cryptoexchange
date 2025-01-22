@@ -1,9 +1,9 @@
-package com.bukoz.cryptoexchange.externalapi.service;
+package com.bukoz.cryptoexchange.service;
 
-import com.bukoz.cryptoexchange.externalapi.client.CoinGeckoApiClient;
-import com.bukoz.cryptoexchange.externalapi.util.RateProcessor;
-import com.bukoz.cryptoexchange.externalapi.util.SupportedCurrenciesFetcher;
+import com.bukoz.cryptoexchange.externalapi.CoinGeckoApiClient;
 import com.bukoz.cryptoexchange.model.CurrencyRate;
+import com.bukoz.cryptoexchange.util.RateProcessor;
+import com.bukoz.cryptoexchange.util.SupportedCurrenciesFetcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

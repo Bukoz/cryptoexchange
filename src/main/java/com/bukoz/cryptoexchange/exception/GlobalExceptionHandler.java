@@ -1,6 +1,7 @@
 package com.bukoz.cryptoexchange.exception;
 
-import com.bukoz.cryptoexchange.externalapi.exception.ExternalApiException;
+import com.bukoz.cryptoexchange.exception.external.ExternalApiException;
+import com.bukoz.cryptoexchange.exception.internal.InternalApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

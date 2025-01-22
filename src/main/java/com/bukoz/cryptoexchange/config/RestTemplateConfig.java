@@ -1,4 +1,4 @@
-package com.bukoz.cryptoexchange.externalapi.configuration;
+package com.bukoz.cryptoexchange.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
