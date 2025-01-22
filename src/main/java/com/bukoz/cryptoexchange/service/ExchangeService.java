@@ -1,0 +1,50 @@
+package com.bukoz.cryptoexchange.service;
+
+import com.bukoz.cryptoexchange.externalapi.service.ExternalApiService;
+import com.bukoz.cryptoexchange.model.ExchangeRequest;
+import com.bukoz.cryptoexchange.model.ExchangeResponse;
+import com.bukoz.cryptoexchange.util.FeeCalculator;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
+@Service
+public class ExchangeService {
+
+    private final ExternalApiService externalApiService;
+    private final FeeCalculator feeCalculator;
+
+    public ExchangeService(ExternalApiService externalApiService, FeeCalculator feeCalculator) {
+        this.externalApiService = externalApiService;
+        this.feeCalculator = feeCalculator;
+    }
+
+    public ExchangeResponse getExchange(ExchangeRequest request) throws IOException, URISyntaxException {
+        Map<String, BigDecimal> rates = externalApiService.fetchRates(request.from(), request.to()).rates();
+        // Process each target currency in parallel
+        Map<String, ExchangeResponse.CurrencyExchangeForecast> forecasts = request.to().stream()
+                .map(to -> CompletableFuture.supplyAsync(() -> {
+                    BigDecimal rate = rates.getOrDefault(to, BigDecimal.ZERO);
+                    BigDecimal fee = feeCalculator.calculateFee(request.amount());
+                    BigDecimal result = rate.multiply(request.amount().subtract(fee)); // Calculate result after subtracting fee
+
+                    return Map.entry(to, ExchangeResponse.CurrencyExchangeForecast
+                            .builder()
+                            .rate(rate)
+                            .amount(request.amount())
+                            .result(result)
+                            .fee(fee)
+                            .build());
+                }))
+                .map(CompletableFuture::join) // Wait for all tasks to complete
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return new ExchangeResponse(request.from(), forecasts);
+
+    }
+}
