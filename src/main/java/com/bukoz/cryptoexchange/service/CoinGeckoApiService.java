@@ -1,9 +1,9 @@
 package com.bukoz.cryptoexchange.service;
 
-import com.bukoz.cryptoexchange.externalapi.CoinGeckoApiClient;
+import com.bukoz.cryptoexchange.externalapi.coingecko.CoinGeckoCurrencyRateApiClient;
+import com.bukoz.cryptoexchange.externalapi.coingecko.CoinGeckoSupportedCurrenciesApiClient;
 import com.bukoz.cryptoexchange.model.CurrencyRate;
 import com.bukoz.cryptoexchange.util.RateProcessor;
-import com.bukoz.cryptoexchange.util.SupportedCurrenciesFetcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +17,11 @@ import java.util.Map;
 @Service
 public class CoinGeckoApiService implements ExternalApiService {
 
-    private final CoinGeckoApiClient apiClient;
-    private final SupportedCurrenciesFetcher fetcher;
+    private final CoinGeckoCurrencyRateApiClient apiClient;
+    private final CoinGeckoSupportedCurrenciesApiClient fetcher;
     private final RateProcessor rateProcessor;
 
-    public CoinGeckoApiService(CoinGeckoApiClient apiClient, SupportedCurrenciesFetcher fetcher, RateProcessor rateProcessor) {
+    public CoinGeckoApiService(CoinGeckoCurrencyRateApiClient apiClient, CoinGeckoSupportedCurrenciesApiClient fetcher, RateProcessor rateProcessor) {
         this.apiClient = apiClient;
         this.fetcher = fetcher;
         this.rateProcessor = rateProcessor;
@@ -32,7 +32,7 @@ public class CoinGeckoApiService implements ExternalApiService {
                 ? fetcher.fetchSupportedCurrencies()
                 : filters;
 
-        Map<String, Object> response = apiClient.fetchRawRates(currency, currencies);
+        Map<String, Object> response = apiClient.fetchRates(currency, currencies);
 
         @SuppressWarnings("unchecked")
         Map<String, Object> rawRates = (Map<String, Object>) response.get(currency);

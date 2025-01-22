@@ -1,5 +1,6 @@
-package com.bukoz.cryptoexchange.util;
+package com.bukoz.cryptoexchange.externalapi.coingecko;
 
+import com.bukoz.cryptoexchange.externalapi.SupportedCurrenciesApiClient;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @Component
-public class SupportedCurrenciesFetcher {
+public class CoinGeckoSupportedCurrenciesApiClient implements SupportedCurrenciesApiClient {
 
     @Value("${external.api.url.supported-currencies}")
     private String supportedCurrenciesApiUrl;
