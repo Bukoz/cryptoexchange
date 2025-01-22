@@ -14,7 +14,7 @@ public class RateProcessor {
         for (Map.Entry<String, Object> entry : rawRates.entrySet()) {
             Object rate = entry.getValue();
             BigDecimal value = toBigDecimal(rate);
-            rates.put(entry.getKey(), value);
+            rates.put(entry.getKey().toUpperCase(), value);
         }
         return rates;
     }

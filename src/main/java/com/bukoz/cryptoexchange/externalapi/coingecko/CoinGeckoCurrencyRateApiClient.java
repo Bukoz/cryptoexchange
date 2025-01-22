@@ -2,6 +2,7 @@ package com.bukoz.cryptoexchange.externalapi.coingecko;
 
 import com.bukoz.cryptoexchange.exception.external.ExternalApiException;
 import com.bukoz.cryptoexchange.externalapi.CurrencyRateApiClient;
+import com.bukoz.cryptoexchange.model.CryptoCurrency;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,12 +24,12 @@ public class CoinGeckoCurrencyRateApiClient implements CurrencyRateApiClient {
         this.restTemplate = restTemplate;
     }
 
-    public Map<String, Object> fetchRates(String currency, List<String> filters) {
-        String url = buildPriceApiUrl(currency, filters);
+    public Map<String, Object> fetchRates(CryptoCurrency currency, List<String> filters) {
+        String url = buildPriceApiUrl(currency.longName(), filters);
 
         @SuppressWarnings("unchecked")
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
-        if (response == null || !response.containsKey(currency)) {
+        if (response == null || !response.containsKey(currency.longName())) {
             log.warn("External API returned an empty response for the URL {}", url);
             throw new ExternalApiException("Received empty response from external API");
         }
@@ -37,9 +38,9 @@ public class CoinGeckoCurrencyRateApiClient implements CurrencyRateApiClient {
     }
 
     private String buildPriceApiUrl(String currency, List<String> filters) {
-        String filterString = String.join(",", filters);
+        String filterString = filters.isEmpty() ? "" : String.join(",", filters).toLowerCase();
         return String.format("%s?ids=%s&vs_currencies=%s", priceApiUrl, currency, filterString);
     }
-
 }
+
 

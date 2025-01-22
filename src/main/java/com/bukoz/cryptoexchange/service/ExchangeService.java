@@ -1,5 +1,6 @@
 package com.bukoz.cryptoexchange.service;
 
+import com.bukoz.cryptoexchange.model.CryptoCurrency;
 import com.bukoz.cryptoexchange.model.ExchangeRequest;
 import com.bukoz.cryptoexchange.model.ExchangeResponse;
 import com.bukoz.cryptoexchange.util.FeeCalculator;
@@ -17,20 +18,28 @@ public class ExchangeService {
 
     private final ExternalApiService externalApiService;
     private final FeeCalculator feeCalculator;
+    private final CurrencyService currencyService;
 
-    public ExchangeService(ExternalApiService externalApiService, FeeCalculator feeCalculator) {
+    public ExchangeService(ExternalApiService externalApiService, FeeCalculator feeCalculator, CurrencyService currencyHandlerService) {
         this.externalApiService = externalApiService;
         this.feeCalculator = feeCalculator;
+        this.currencyService = currencyHandlerService;
     }
 
     public ExchangeResponse getExchange(ExchangeRequest request) throws IOException, URISyntaxException {
-        Map<String, BigDecimal> rates = externalApiService.fetchRates(request.from(), request.to()).rates();
-        // Process each target currency in parallel
+        Map<String, BigDecimal> rates = externalApiService.fetchRates(
+                currencyService.getCurrency(request.from()),
+                request.to().stream()
+                        .map(currencyService::getCurrency) // Assuming to already represents long names
+                        .map(CryptoCurrency::shortName)
+                        .toList()
+        ).rates();
+
         Map<String, ExchangeResponse.CurrencyExchangeForecast> forecasts = request.to().stream()
                 .map(to -> CompletableFuture.supplyAsync(() -> {
                     BigDecimal rate = rates.getOrDefault(to, BigDecimal.ZERO);
                     BigDecimal fee = feeCalculator.calculateFee(request.amount());
-                    BigDecimal result = rate.multiply(request.amount().subtract(fee)); // Calculate result after subtracting fee
+                    BigDecimal result = rate.multiply(request.amount().subtract(fee));
 
                     return Map.entry(to, ExchangeResponse.CurrencyExchangeForecast
                             .builder()
@@ -40,10 +49,10 @@ public class ExchangeService {
                             .fee(fee)
                             .build());
                 }))
-                .map(CompletableFuture::join) // Wait for all tasks to complete
+                .map(CompletableFuture::join)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return new ExchangeResponse(request.from(), forecasts);
-
     }
 }
+
