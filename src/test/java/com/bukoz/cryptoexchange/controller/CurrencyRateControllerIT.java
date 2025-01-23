@@ -6,7 +6,6 @@ import com.bukoz.cryptoexchange.model.CurrencyRateResponse;
 import com.bukoz.cryptoexchange.service.CurrencyRateService;
 import com.bukoz.cryptoexchange.service.CurrencyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,7 +19,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -37,32 +35,28 @@ class CurrencyRateControllerIT {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockBean
     private CurrencyRateService currencyRateService;
 
     @MockBean
     private CurrencyService currencyService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-
     @Test
     void getRatesWhenSquareBracketsInParamSuccess() throws Exception {
         mockBehaviorForSuccessTest();
 
-        var result = mockMvc.perform(get(CURRENCIES_URL, BITCOIN)
+        mockMvc.perform(get(CURRENCIES_URL, BITCOIN)
                         .param("filter[]", ETH)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.source").exists())
+                .andExpect(jsonPath("$.source").value(BITCOIN))
                 .andExpect(jsonPath("$.rates").exists())
-                .andReturn();
-
-        String source = JsonPath.read(result.getResponse().getContentAsString(), "$.source");
-
-        assertEquals(BITCOIN, source);
+                .andExpect(jsonPath("$.rates.ETH").value(BigDecimal.valueOf(30)));
     }
 
 
@@ -70,18 +64,15 @@ class CurrencyRateControllerIT {
     void getRatesWhenNoSquareBracketsInParamSuccess() throws Exception {
         mockBehaviorForSuccessTest();
 
-        var result = mockMvc.perform(get(CURRENCIES_URL, BITCOIN)
+        mockMvc.perform(get(CURRENCIES_URL, BITCOIN)
                         .param("filter", ETH)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.source").exists())
+                .andExpect(jsonPath("$.source").value(BITCOIN))
                 .andExpect(jsonPath("$.rates").exists())
-                .andReturn();
-
-        String source = JsonPath.read(result.getResponse().getContentAsString(), "$.source");
-
-        assertEquals(BITCOIN, source);
+                .andExpect(jsonPath("$.rates.ETH").value(BigDecimal.valueOf(30)));
     }
 
     private void mockBehaviorForSuccessTest() throws IOException, URISyntaxException {
@@ -98,19 +89,14 @@ class CurrencyRateControllerIT {
         String currency = "testCurrency";
         when(currencyService.getCurrency(currency)).thenThrow(new UnsupportedCurrencyException(currency + " not supported"));
 
-        var result = mockMvc.perform(get(CURRENCIES_URL, currency)
+        mockMvc.perform(get(CURRENCIES_URL, currency)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.message").value("Currency not found"))
                 .andExpect(jsonPath("$.detail").exists())
-                .andReturn();
-
-        String message = JsonPath.read(result.getResponse().getContentAsString(), "$.message");
-        String detail = JsonPath.read(result.getResponse().getContentAsString(), "$.detail");
-
-        assertEquals("Currency not found", message);
-        assertEquals("testCurrency not supported", detail);
+                .andExpect(jsonPath("$.detail").value("testCurrency not supported"));
     }
 
 }
