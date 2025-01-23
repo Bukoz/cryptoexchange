@@ -30,7 +30,7 @@ public class ExchangeService {
         Map<String, BigDecimal> rates = externalApiService.fetchRates(
                 currencyService.getCurrency(request.from()),
                 request.to().stream()
-                        .map(currencyService::getCurrency) // Assuming to already represents long names
+                        .map(currencyService::getCurrency)
                         .map(CryptoCurrency::shortName)
                         .toList()
         ).rates();
@@ -55,4 +55,3 @@ public class ExchangeService {
         return new ExchangeResponse(request.from(), forecasts);
     }
 }
-
