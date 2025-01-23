@@ -4,11 +4,10 @@ import com.bukoz.cryptoexchange.handler.CurrencyHandler;
 import com.bukoz.cryptoexchange.model.CryptoCurrency;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class CoinGeckoCurrencyHandler implements CurrencyHandler {
@@ -33,7 +32,7 @@ public class CoinGeckoCurrencyHandler implements CurrencyHandler {
     private void addCurrency(String shortName, String longName) {
         CryptoCurrency currency = new CryptoCurrency(shortName, longName);
         shortNameMap.put(shortName, currency);
-        longNameMap.put(longName.toLowerCase(), currency);
+        longNameMap.put(longName, currency);
     }
 
     @Override
@@ -48,6 +47,6 @@ public class CoinGeckoCurrencyHandler implements CurrencyHandler {
 
     @Override
     public List<CryptoCurrency> getAllCurrencies() {
-        return Collections.unmodifiableList(shortNameMap.values().stream().collect(Collectors.toList()));
+        return new ArrayList<>(shortNameMap.values());
     }
 }

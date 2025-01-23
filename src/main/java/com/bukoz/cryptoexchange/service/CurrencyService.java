@@ -5,6 +5,8 @@ import com.bukoz.cryptoexchange.handler.CurrencyHandler;
 import com.bukoz.cryptoexchange.model.CryptoCurrency;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CurrencyService {
 
@@ -23,6 +25,10 @@ public class CurrencyService {
             throw new UnsupportedCurrencyException(name.toUpperCase() + " currency not found.");
         }
         return currency;
+    }
+
+    public List<CryptoCurrency> getAllCurrencies() {
+        return currencyHandler.getAllCurrencies();
     }
 
 }

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -34,7 +33,7 @@ public class CurrencyController {
 
         CryptoCurrency baseCurrency = currencyService.getCurrency(currency);
         List<CryptoCurrency> filterCurrencies = filters == null
-                ? Collections.emptyList()
+                ? currencyService.getAllCurrencies()
                 : filters.stream()
                 .map(currencyService::getCurrency)
                 .toList();
