@@ -2,25 +2,32 @@
 
 ## Task for Gamedia interview process
 
----
+# Table of Contents
+
+- [Build](#build)
+- [Verify](#verify)
+- [Spring Boot Run](#spring-boot-run)
+- [API Usage](#api-usage)
+- [File structure](#file-structure)
+- [Dependencies](#dependencies)
 
 ## Build
 
 Build the application to download required dependencies:
-``
-mvn clean package
-``
 
----
+```
+mvn clean package
+```
 
 ## Verify
 
 To verify Unit Tests and Integration Tests run:
-``mvn verify``
+
+```
+mvn verify
+```
 
 ![](img/verify.gif)
-
----
 
 ## Spring Boot Run
 
@@ -28,31 +35,107 @@ To run the application
 
 - start it from your IDE
 - use Maven or Maven Wrapper
-  ``
-  mvn spring-boot:run
-  ``
+
+```
+mvn spring-boot:run
+```
 
 ![](img/run.gif)
-
----
 
 ## API Usage
 
 API is available through [Swagger](http://localhost:8080/swagger-ui/index.html)
 
-``
+```
 http://localhost:8080/swagger-ui/index.html
-``
+```
 
-API Endpoints:
+### API Endpoints:
 
-- GET /currencies/{currency}?filter=
-- POST /exchange
+**GET** /currencies/{currency}?filter= (filter is not mandatory)
 
-External crypto API - [CoinGecko](https://www.coingecko.com/en/api)
+**Example usage with cURL**
 
-Supported crypto names - either name can be used in API calls.
-(due to limitations of CoinGecko API this list had to be reduced)
+```
+curl -X 'GET' \
+  'http://localhost:8080/currencies/btc?filter=xrp&filter=eth' \
+  -H 'accept: application/json'
+```
+
+**Example output:**
+
+```
+{
+  "source": "BTC",
+  "rates": {
+    "XRP": 33750,
+    "ETH": 32.432179
+  }
+}
+```
+
+**POST** /exchange
+
+**Request body**
+
+```
+{
+  "from": "currencyA",
+  "to": [
+    "currencyB",
+    "currencyC",
+    ...
+  ],
+  "amount": 123
+}
+```
+
+**Example usage with cURL**
+
+```
+curl -X 'POST' \
+  'http://localhost:8080/currencies/exchange' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "from": "btc",
+  "to": [
+    "eth",
+    "xrp"
+  ],
+  "amount": 1
+}'
+
+```
+
+**Example output:**
+
+```
+{
+  "from": "btc",
+  "forecasts": {
+    "eth": {
+      "rate": 32.435697,
+      "amount": 1,
+      "result": 32.11134003,
+      "fee": 0.01
+    },
+    "xrp": {
+      "rate": 33764,
+      "amount": 1,
+      "result": 33426.36,
+      "fee": 0.01
+    }
+  },
+  "note": "Each forecast is calculated after subtracting fee from original currency (btc)"
+}
+```
+
+**External crypto API used in application** - [CoinGecko](https://www.coingecko.com/en/api)
+
+### Supported crypto names due to limitations of CoinGecko API
+
+Both names of specific currency can be used in API calls
 
 ```
 BTC, bitcoin
@@ -67,8 +150,6 @@ LINK, chainlink
 DOT, polkadot
 YFI, yearn-finance
 ```
-
----
 
 ## File structure
 
@@ -147,8 +228,6 @@ YFI, yearn-finance
                         └── util
                             └── FeeCalculatorTest.java
 ```
-
----
 
 ## Dependencies:
 
