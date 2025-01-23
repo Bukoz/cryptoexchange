@@ -14,7 +14,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -46,13 +48,8 @@ class CurrencyRateControllerIT {
 
 
     @Test
-    void getRatesSuccess() throws Exception {
-        CryptoCurrency baseCurrency = new CryptoCurrency(BTC, BITCOIN);
-        List<CryptoCurrency> filterCurrencies = List.of(new CryptoCurrency(ETH, ETHEREUM));
-        CurrencyRateResponse response = new CurrencyRateResponse(BITCOIN, Map.of(ETH, BigDecimal.valueOf(30)));
-        when(currencyService.getCurrency(BITCOIN)).thenReturn(baseCurrency);
-        when(currencyService.getCurrency(ETH)).thenReturn(new CryptoCurrency(ETH, ETHEREUM));
-        when(currencyRateService.getCurrencyRates(baseCurrency, filterCurrencies)).thenReturn(response);
+    void getRatesWhenSquareBracketsInParamSuccess() throws Exception {
+        mockBehaviorForSuccessTest();
 
         var result = mockMvc.perform(get(CURRENCIES_URL, BITCOIN)
                         .param("filter[]", ETH)
@@ -66,6 +63,34 @@ class CurrencyRateControllerIT {
         String source = JsonPath.read(result.getResponse().getContentAsString(), "$.source");
 
         assertEquals(BITCOIN, source);
+    }
+
+
+    @Test
+    void getRatesWhenNoSquareBracketsInParamSuccess() throws Exception {
+        mockBehaviorForSuccessTest();
+
+        var result = mockMvc.perform(get(CURRENCIES_URL, BITCOIN)
+                        .param("filter", ETH)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.source").exists())
+                .andExpect(jsonPath("$.rates").exists())
+                .andReturn();
+
+        String source = JsonPath.read(result.getResponse().getContentAsString(), "$.source");
+
+        assertEquals(BITCOIN, source);
+    }
+
+    private void mockBehaviorForSuccessTest() throws IOException, URISyntaxException {
+        CryptoCurrency baseCurrency = new CryptoCurrency(BTC, BITCOIN);
+        List<CryptoCurrency> filterCurrencies = List.of(new CryptoCurrency(ETH, ETHEREUM));
+        CurrencyRateResponse response = new CurrencyRateResponse(BITCOIN, Map.of(ETH, BigDecimal.valueOf(30)));
+        when(currencyService.getCurrency(BITCOIN)).thenReturn(baseCurrency);
+        when(currencyService.getCurrency(ETH)).thenReturn(new CryptoCurrency(ETH, ETHEREUM));
+        when(currencyRateService.getCurrencyRates(baseCurrency, filterCurrencies)).thenReturn(response);
     }
 
     @Test

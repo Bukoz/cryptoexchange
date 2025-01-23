@@ -41,7 +41,7 @@ public class CurrencyRateController {
     @GetMapping("/{currency}")
     public ResponseEntity<CurrencyRateResponse> getRates(
             @PathVariable String currency,
-            @RequestParam(value = "filter[]", required = false) List<String> filters) throws IOException, URISyntaxException {
+            @RequestParam(value = "filter", required = false) List<String> filters) throws IOException, URISyntaxException {
         log.debug("Currency rate GET call for {} with filter {}", currency, filters);
 
         CryptoCurrency baseCurrency = currencyService.getCurrency(currency);
