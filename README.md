@@ -4,12 +4,26 @@
 
 # Table of Contents
 
+- [Requirements](#requirements)
+- [Notes](#notes)
 - [Build](#build)
 - [Verify](#verify)
 - [Spring Boot Run](#spring-boot-run)
 - [API Usage](#api-usage)
+    - [API Endpoints](#api-endpoints)
+        - [GET Request](#get)
+        - [POST Request](#post)
+    - [Supported Crypto](#supported-crypto-names-due-to-limitations-of-coingecko-api)
 - [File structure](#file-structure)
 - [Dependencies](#dependencies)
+
+## Requirements
+
+**Java 17**
+
+## Notes
+
+**External crypto API used in application** - [CoinGecko](https://www.coingecko.com/en/api)
 
 ## Build
 
@@ -52,7 +66,9 @@ http://localhost:8080/swagger-ui/index.html
 
 ### API Endpoints:
 
-**GET** /currencies/{currency}?filter= (filter is not mandatory)
+#### GET
+
+/currencies/{currency}?filter= (filter is not mandatory)
 
 **Example usage with cURL**
 
@@ -74,7 +90,9 @@ curl -X 'GET' \
 }
 ```
 
-**POST** /exchange
+#### POST
+
+/exchange
 
 **Request body**
 
@@ -130,8 +148,6 @@ curl -X 'POST' \
   "note": "Each forecast is calculated after subtracting fee from original currency (btc)"
 }
 ```
-
-**External crypto API used in application** - [CoinGecko](https://www.coingecko.com/en/api)
 
 ### Supported crypto names due to limitations of CoinGecko API
 
@@ -231,7 +247,6 @@ YFI, yearn-finance
 
 ## Dependencies:
 
-- Java 17
 - Spring Boot (3.3.7)
 - Lombok (1.8.36)
 - SpringDoc OpenAPI Starter WebMVC UI (2.5.0)
