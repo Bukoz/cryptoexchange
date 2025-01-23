@@ -22,6 +22,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CurrencyRateServiceTest {
 
+    private static final String BTC = "BTC";
+    private static final String ETH = "ETH";
+    private static final String LTC = "LTC";
     @Mock
     private ExternalApiService externalApiService;
 
@@ -33,23 +36,23 @@ class CurrencyRateServiceTest {
 
     @BeforeEach
     void setUp() {
-        baseCurrency = new CryptoCurrency("BTC", "bitcoin");
-        filters = List.of(new CryptoCurrency("ETH", "ethereum"), new CryptoCurrency("LTC", "litecoin"));
+        baseCurrency = new CryptoCurrency(BTC, "bitcoin");
+        filters = List.of(new CryptoCurrency(ETH, "ethereum"), new CryptoCurrency(LTC, "litecoin"));
     }
 
     @Test
     void getCurrencyRatesSuccess() throws IOException, URISyntaxException {
-        CurrencyRateResponse expectedResponse = new CurrencyRateResponse("BTC", Map.of("ETH", BigDecimal.valueOf(30), "LTC", BigDecimal.valueOf(150)));
-        when(externalApiService.fetchRates(baseCurrency, List.of("ETH", "LTC"))).thenReturn(expectedResponse);
+        CurrencyRateResponse expectedResponse = new CurrencyRateResponse(BTC, Map.of(ETH, BigDecimal.valueOf(30), LTC, BigDecimal.valueOf(150)));
+        when(externalApiService.fetchRates(baseCurrency, List.of(ETH, LTC))).thenReturn(expectedResponse);
 
         CurrencyRateResponse response = currencyRateService.getCurrencyRates(baseCurrency, filters);
 
         assertNotNull(response);
-        assertEquals("BTC", response.source());
-        assertTrue(response.rates().containsKey("ETH"));
-        assertTrue(response.rates().containsKey("LTC"));
-        assertEquals(BigDecimal.valueOf(30), response.rates().get("ETH"));
-        assertEquals(BigDecimal.valueOf(150), response.rates().get("LTC"));
+        assertEquals(BTC, response.source());
+        assertTrue(response.rates().containsKey(ETH));
+        assertTrue(response.rates().containsKey(LTC));
+        assertEquals(BigDecimal.valueOf(30), response.rates().get(ETH));
+        assertEquals(BigDecimal.valueOf(150), response.rates().get(LTC));
     }
 
     @Test
@@ -61,7 +64,7 @@ class CurrencyRateServiceTest {
 
     @Test
     void getCurrencyRatesThrowsIOException() throws IOException, URISyntaxException {
-        when(externalApiService.fetchRates(baseCurrency, List.of("ETH", "LTC"))).thenThrow(new IOException("API Error"));
+        when(externalApiService.fetchRates(baseCurrency, List.of(ETH, LTC))).thenThrow(new IOException("API Error"));
 
         IOException exception = assertThrows(IOException.class, () -> {
             currencyRateService.getCurrencyRates(baseCurrency, filters);
@@ -72,7 +75,7 @@ class CurrencyRateServiceTest {
 
     @Test
     void getCurrencyRatesThrowsURISyntaxException() throws IOException, URISyntaxException {
-        when(externalApiService.fetchRates(baseCurrency, List.of("ETH", "LTC"))).thenThrow(new URISyntaxException("invalid", "Invalid URL"));
+        when(externalApiService.fetchRates(baseCurrency, List.of(ETH, LTC))).thenThrow(new URISyntaxException("invalid", "Invalid URL"));
 
         URISyntaxException exception = assertThrows(URISyntaxException.class, () -> {
             currencyRateService.getCurrencyRates(baseCurrency, filters);

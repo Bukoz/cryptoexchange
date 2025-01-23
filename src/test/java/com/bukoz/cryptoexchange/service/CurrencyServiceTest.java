@@ -18,6 +18,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CurrencyServiceTest {
 
+    private static final String BTC = "BTC";
+    private static final String BITCOIN = "bitcoin";
     @Mock
     private CurrencyHandler currencyHandler;
 
@@ -26,25 +28,25 @@ class CurrencyServiceTest {
 
     @Test
     void getCurrencyByShortNameSuccess() {
-        CryptoCurrency currency = new CryptoCurrency("BTC", "bitcoin");
+        CryptoCurrency currency = new CryptoCurrency(BTC, BITCOIN);
         when(currencyHandler.getByShortName(anyString())).thenReturn(currency);
 
-        var result = currencyService.getCurrency("btc");
+        var result = currencyService.getCurrency(BTC);
 
         assertNotNull(result);
-        assertEquals("BTC", result.shortName());
+        assertEquals(BTC, result.shortName());
     }
 
     @Test
     void getCurrencyByLongNameSuccess() {
-        CryptoCurrency currency = new CryptoCurrency("BTC", "bitcoin");
+        CryptoCurrency currency = new CryptoCurrency(BTC, BITCOIN);
         when(currencyHandler.getByShortName(anyString())).thenReturn(null);
         when(currencyHandler.getByLongName(anyString())).thenReturn(currency);
 
-        var result = currencyService.getCurrency("bitcoin");
+        var result = currencyService.getCurrency(BITCOIN);
 
         assertNotNull(result);
-        assertEquals("bitcoin", result.longName());
+        assertEquals(BITCOIN, result.longName());
     }
 
     @Test
@@ -59,7 +61,7 @@ class CurrencyServiceTest {
 
     @Test
     void getAllCurrencies() {
-        when(currencyHandler.getAllCurrencies()).thenReturn(List.of(new CryptoCurrency("BTC", "bitcoin")));
+        when(currencyHandler.getAllCurrencies()).thenReturn(List.of(new CryptoCurrency(BTC, BITCOIN)));
 
         var result = currencyService.getAllCurrencies();
 

@@ -25,6 +25,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ExchangeServiceTest {
 
+    private static final String BTC = "BTC";
+    private static final String ETH = "ETH";
+    private static final String XRP = "XRP";
+    private static final String BITCOIN = "bitcoin";
+    private static final String ETHEREUM = "ethereum";
+    private static final String RIPPLE = "ripple";
     @Mock
     private ExternalApiService externalApiService;
     @Mock
@@ -37,26 +43,26 @@ class ExchangeServiceTest {
 
     @Test
     void getExchange() throws IOException, URISyntaxException {
-        CryptoCurrency currency = new CryptoCurrency("BTC", "bitcoin");
-        when(currencyService.getCurrency("BTC")).thenReturn(currency);
-        List<String> targetCurrencies = List.of("ETH", "XRP");
-        when(currencyService.getCurrency("ETH")).thenReturn(new CryptoCurrency("ETH", "ethereum"));
-        when(currencyService.getCurrency("XRP")).thenReturn(new CryptoCurrency("xrp", "ripple"));
+        CryptoCurrency currency = new CryptoCurrency(BTC, BITCOIN);
+        when(currencyService.getCurrency(BTC)).thenReturn(currency);
+        List<String> targetCurrencies = List.of(ETH, XRP);
+        when(currencyService.getCurrency(ETH)).thenReturn(new CryptoCurrency(ETH, ETHEREUM));
+        when(currencyService.getCurrency(XRP)).thenReturn(new CryptoCurrency(XRP, RIPPLE));
         Map<String, BigDecimal> rates = Map.of(
-                "ETH", BigDecimal.valueOf(30.0),
-                "XRP", BigDecimal.valueOf(100.0)
+                ETH, BigDecimal.valueOf(30.0),
+                XRP, BigDecimal.valueOf(100.0)
         );
         when(externalApiService.fetchRates(eq(currency), any()))
                 .thenReturn(new CurrencyRateResponse(currency.shortName(), rates));
-        ExchangeRequest request = new ExchangeRequest("BTC", targetCurrencies, BigDecimal.valueOf(100));
+        ExchangeRequest request = new ExchangeRequest(BTC, targetCurrencies, BigDecimal.valueOf(100));
         Map<String, ExchangeResponse.CurrencyExchangeForecast> forecasts = Map.of(
-                "ETH", ExchangeResponse.CurrencyExchangeForecast.builder()
+                ETH, ExchangeResponse.CurrencyExchangeForecast.builder()
                         .rate(BigDecimal.valueOf(0.9))
                         .amount(BigDecimal.valueOf(100))
                         .result(BigDecimal.valueOf(85.5)) // Mocked result
                         .fee(BigDecimal.valueOf(5))
                         .build(),
-                "XRP", ExchangeResponse.CurrencyExchangeForecast.builder()
+                XRP, ExchangeResponse.CurrencyExchangeForecast.builder()
                         .rate(BigDecimal.valueOf(110.0))
                         .amount(BigDecimal.valueOf(100))
                         .result(BigDecimal.valueOf(10450)) // Mocked result
@@ -67,7 +73,7 @@ class ExchangeServiceTest {
 
         ExchangeResponse response = exchangeService.getExchange(request);
 
-        assertEquals("BTC", response.getFrom());
+        assertEquals(BTC, response.getFrom());
         assertEquals(forecasts, response.getForecasts());
         assertEquals("Each forecast is calculated after subtracting fee from original currency (BTC)", response.getNote());
     }
@@ -94,11 +100,11 @@ class ExchangeServiceTest {
     }
 
     private ExchangeRequest mockExchangeRequest() {
-        CryptoCurrency currency = new CryptoCurrency("BTC", "bitcoin");
-        when(currencyService.getCurrency("BTC")).thenReturn(currency);
-        List<String> targetCurrencies = List.of("ETH", "XRP");
-        when(currencyService.getCurrency("ETH")).thenReturn(new CryptoCurrency("ETH", "ethereum"));
-        when(currencyService.getCurrency("XRP")).thenReturn(new CryptoCurrency("xrp", "ripple"));
-        return new ExchangeRequest("BTC", targetCurrencies, BigDecimal.valueOf(100));
+        CryptoCurrency currency = new CryptoCurrency(BTC, BITCOIN);
+        when(currencyService.getCurrency(BTC)).thenReturn(currency);
+        List<String> targetCurrencies = List.of(ETH, XRP);
+        when(currencyService.getCurrency(ETH)).thenReturn(new CryptoCurrency(ETH, ETHEREUM));
+        when(currencyService.getCurrency(XRP)).thenReturn(new CryptoCurrency(XRP, RIPPLE));
+        return new ExchangeRequest(BTC, targetCurrencies, BigDecimal.valueOf(100));
     }
 }

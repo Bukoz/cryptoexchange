@@ -22,6 +22,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith({MockitoExtension.class})
 class CoinGeckoCurrencyRateApiClientTest {
 
+    private static final String BTC = "BTC";
+    private static final String ETH = "eth";
+    private static final String BITCOIN = "bitcoin";
     @Mock
     private RestTemplate restTemplate;
 
@@ -30,38 +33,38 @@ class CoinGeckoCurrencyRateApiClientTest {
 
     @Test
     void fetchRatesWithValidResponse() {
-        CryptoCurrency cryptoCurrency = new CryptoCurrency("BTC", "bitcoin");
-        List<String> filters = List.of("eth");
+        CryptoCurrency cryptoCurrency = new CryptoCurrency(BTC, BITCOIN);
+        List<String> filters = List.of(ETH);
         Map<String, Object> mockResponse = new HashMap<>();
-        mockResponse.put("bitcoin", Map.of("eth", 30));
+        mockResponse.put(BITCOIN, Map.of(ETH, 30));
         when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(mockResponse);
 
         Map<String, Object> result = coinGeckoCurrencyRateApiClient.fetchRates(cryptoCurrency, filters);
 
         assertNotNull(result);
-        assertTrue(result.containsKey("bitcoin"));
-        assertEquals(30, ((Map<?, ?>) result.get("bitcoin")).get("eth"));
+        assertTrue(result.containsKey(BITCOIN));
+        assertEquals(30, ((Map<?, ?>) result.get(BITCOIN)).get(ETH));
     }
 
     @Test
     void fetchRatesWithNoFilters() {
-        CryptoCurrency cryptoCurrency = new CryptoCurrency("BTC", "bitcoin");
+        CryptoCurrency cryptoCurrency = new CryptoCurrency(BTC, BITCOIN);
         List<String> filters = new ArrayList<>();
         Map<String, Object> mockResponse = new HashMap<>();
-        mockResponse.put("bitcoin", Map.of("eth", 30));
+        mockResponse.put(BITCOIN, Map.of(ETH, 30));
         when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(mockResponse);
 
         Map<String, Object> result = coinGeckoCurrencyRateApiClient.fetchRates(cryptoCurrency, filters);
 
         assertNotNull(result);
-        assertTrue(result.containsKey("bitcoin"));
-        assertEquals(30, ((Map<?, ?>) result.get("bitcoin")).get("eth"));
+        assertTrue(result.containsKey(BITCOIN));
+        assertEquals(30, ((Map<?, ?>) result.get(BITCOIN)).get(ETH));
     }
 
     @Test
     void fetchRatesWithEmptyResponse() {
-        CryptoCurrency cryptoCurrency = new CryptoCurrency("BTC", "bitcoin");
-        List<String> filters = List.of("eth");
+        CryptoCurrency cryptoCurrency = new CryptoCurrency(BTC, BITCOIN);
+        List<String> filters = List.of(ETH);
         Map<String, Object> mockResponse = new HashMap<>(); // Empty response
         when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(mockResponse);
 

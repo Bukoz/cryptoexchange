@@ -25,6 +25,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ExchangeController.class)
 class ExchangeControllerIT {
 
+    private static final String EXCHANGE_API_URL = "/currencies/exchange";
+    private static final String ETH = "ETH";
+    private static final String XRP = "XRP";
+    private static final String BTC = "BTC";
+    
     @Autowired
     private MockMvc mockMvc;
 
@@ -37,28 +42,28 @@ class ExchangeControllerIT {
     @Test
     void getExchangeSuccessfulResponse() throws Exception {
         Map<String, ExchangeResponse.CurrencyExchangeForecast> forecasts = Map.of(
-                "ETH", ExchangeResponse.CurrencyExchangeForecast.builder()
+                ETH, ExchangeResponse.CurrencyExchangeForecast.builder()
                         .rate(BigDecimal.valueOf(0.9))
                         .amount(BigDecimal.valueOf(100))
                         .result(BigDecimal.valueOf(85.5))
                         .fee(BigDecimal.valueOf(5))
                         .build(),
-                "XRP", ExchangeResponse.CurrencyExchangeForecast.builder()
+                XRP, ExchangeResponse.CurrencyExchangeForecast.builder()
                         .rate(BigDecimal.valueOf(110.0))
                         .amount(BigDecimal.valueOf(100))
                         .result(BigDecimal.valueOf(10450))
                         .fee(BigDecimal.valueOf(5))
                         .build()
         );
-        ExchangeResponse mockResponse = new ExchangeResponse("BTC", forecasts, "Each forecast is calculated after subtracting fee from original currency (BTC)");
+        ExchangeResponse mockResponse = new ExchangeResponse(BTC, forecasts, "Each forecast is calculated after subtracting fee from original currency (BTC)");
         when(exchangeService.getExchange(any(ExchangeRequest.class))).thenReturn(mockResponse);
-        ExchangeRequest request = new ExchangeRequest("BTC", List.of("ETH", "XRP"), BigDecimal.valueOf(100));
+        ExchangeRequest request = new ExchangeRequest(BTC, List.of(ETH, XRP), BigDecimal.valueOf(100));
 
-        mockMvc.perform(post("/currencies/exchange")
+        mockMvc.perform(post(EXCHANGE_API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.from").value("BTC"))
+                .andExpect(jsonPath("$.from").value(BTC))
                 .andExpect(jsonPath("$.forecasts.ETH.rate").value(0.9))
                 .andExpect(jsonPath("$.forecasts.ETH.result").value(85.5))
                 .andExpect(jsonPath("$.forecasts.XRP.rate").value(110.0))
@@ -68,9 +73,9 @@ class ExchangeControllerIT {
 
     @Test
     void getExchangeBadRequest() throws Exception {
-        ExchangeRequest invalidRequest = new ExchangeRequest("BTC", null, BigDecimal.valueOf(100));
+        ExchangeRequest invalidRequest = new ExchangeRequest(BTC, null, BigDecimal.valueOf(100));
 
-        mockMvc.perform(post("/currencies/exchange")
+        mockMvc.perform(post(EXCHANGE_API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -80,9 +85,9 @@ class ExchangeControllerIT {
     void getExchangeCurrencyNotFound() throws Exception {
         when(exchangeService.getExchange(any(ExchangeRequest.class)))
                 .thenThrow(new UnsupportedCurrencyException("testCurrency not found"));
-        ExchangeRequest request = new ExchangeRequest("BTC", List.of("testCurrency"), BigDecimal.valueOf(100));
+        ExchangeRequest request = new ExchangeRequest(BTC, List.of("testCurrency"), BigDecimal.valueOf(100));
 
-        mockMvc.perform(post("/currencies/exchange")
+        mockMvc.perform(post(EXCHANGE_API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound())
@@ -94,9 +99,9 @@ class ExchangeControllerIT {
     void getExchangeInternalServerError() throws Exception {
         when(exchangeService.getExchange(any(ExchangeRequest.class)))
                 .thenThrow(new RuntimeException("Unexpected error"));
-        ExchangeRequest request = new ExchangeRequest("BTC", List.of("ETH"), BigDecimal.valueOf(100));
+        ExchangeRequest request = new ExchangeRequest(BTC, List.of(ETH), BigDecimal.valueOf(100));
 
-        mockMvc.perform(post("/currencies/exchange")
+        mockMvc.perform(post(EXCHANGE_API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isInternalServerError())

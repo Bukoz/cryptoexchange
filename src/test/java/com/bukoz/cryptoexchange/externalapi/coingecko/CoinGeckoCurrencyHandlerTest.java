@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CoinGeckoCurrencyHandlerTest {
 
+    private static final String BTC = "BTC";
+    private static final String ETH = "ETH";
     private CoinGeckoCurrencyHandler currencyHandler;
 
     @BeforeEach
@@ -19,12 +21,10 @@ class CoinGeckoCurrencyHandlerTest {
 
     @Test
     void getByShortName() {
-        String shortName = "BTC";
-
-        CryptoCurrency result = currencyHandler.getByShortName(shortName);
+        CryptoCurrency result = currencyHandler.getByShortName(BTC);
 
         assertNotNull(result);
-        assertEquals("BTC", result.shortName());
+        assertEquals(BTC, result.shortName());
         assertEquals("bitcoin", result.longName());
     }
 
@@ -44,7 +44,7 @@ class CoinGeckoCurrencyHandlerTest {
         CryptoCurrency result = currencyHandler.getByLongName(longName);
 
         assertNotNull(result);
-        assertEquals("ETH", result.shortName());
+        assertEquals(ETH, result.shortName());
         assertEquals("ethereum", result.longName());
     }
 
@@ -63,8 +63,8 @@ class CoinGeckoCurrencyHandlerTest {
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
-        assertTrue(result.stream().anyMatch(c -> "BTC".equals(c.shortName())));
-        assertTrue(result.stream().anyMatch(c -> "ETH".equals(c.shortName())));
+        assertTrue(result.stream().anyMatch(c -> BTC.equals(c.shortName())));
+        assertTrue(result.stream().anyMatch(c -> ETH.equals(c.shortName())));
     }
 
 }

@@ -11,11 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class CoinGeckoPriceApiHelperTest {
 
     private static final String API_URL = "fake-api/price";
+    private static final String ETH = "eth";
+    private static final String XRP = "xrp";
 
     @Test
     void buildPriceApiUrlWithFilters() {
         String currency = "bitcoin";
-        List<String> filters = List.of("eth", "xrp");
+        List<String> filters = List.of(ETH, XRP);
         String expectedUrl = "fake-api/price?ids=bitcoin&vs_currencies=eth,xrp";
 
         String resultUrl = CoinGeckoPriceApiHelper.buildPriceApiUrl(currency, filters, API_URL);
@@ -37,7 +39,7 @@ class CoinGeckoPriceApiHelperTest {
     @Test
     void buildPriceApiUrlWithSingleFilter() {
         String currency = "bitcoin";
-        List<String> filters = List.of("eth");
+        List<String> filters = List.of(ETH);
         String expectedUrl = "fake-api/price?ids=bitcoin&vs_currencies=eth";
 
         String resultUrl = CoinGeckoPriceApiHelper.buildPriceApiUrl(currency, filters, API_URL);
@@ -48,7 +50,7 @@ class CoinGeckoPriceApiHelperTest {
     @Test
     void buildPriceApiUrlWithEmptyCurrency() {
         String currency = "";
-        List<String> filters = List.of("usd", "eur");
+        List<String> filters = List.of(ETH, XRP);
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> CoinGeckoPriceApiHelper.buildPriceApiUrl(currency, filters, API_URL));
 

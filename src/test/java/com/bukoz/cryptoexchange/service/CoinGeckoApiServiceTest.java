@@ -22,6 +22,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CoinGeckoApiServiceTest {
 
+    private static final String XRP = "xrp";
+    private static final String BITCOIN = "bitcoin";
+    private static final String ETH = "eth";
     @Mock
     private CoinGeckoCurrencyRateApiClient apiClient;
     @Mock
@@ -35,25 +38,25 @@ class CoinGeckoApiServiceTest {
 
     @BeforeEach
     void setUp() {
-        currency = new CryptoCurrency("BTC", "bitcoin");
-        filters = List.of("eth", "xrp");
+        currency = new CryptoCurrency("BTC", BITCOIN);
+        filters = List.of(ETH, XRP);
     }
 
     @Test
     void fetchRates() {
-        Map<String, Object> apiResponse = Map.of("bitcoin", Map.of("eth", 30, "xrp", 100));
+        Map<String, Object> apiResponse = Map.of(BITCOIN, Map.of(ETH, 30, XRP, 100));
         when(apiClient.fetchRates(currency, filters)).thenReturn(apiResponse);
-        Map<String, BigDecimal> processedRates = Map.of("eth", BigDecimal.valueOf(30), "xrp", BigDecimal.valueOf(100));
+        Map<String, BigDecimal> processedRates = Map.of(ETH, BigDecimal.valueOf(30), XRP, BigDecimal.valueOf(100));
         when(rateProcessor.processRates(anyMap())).thenReturn(processedRates);
 
         CurrencyRateResponse response = coinGeckoApiService.fetchRates(currency, filters);
 
         assertNotNull(response);
         assertEquals("BTC", response.source());
-        assertTrue(response.rates().containsKey("eth"));
-        assertTrue(response.rates().containsKey("xrp"));
-        assertEquals(BigDecimal.valueOf(30), response.rates().get("eth"));
-        assertEquals(BigDecimal.valueOf(100), response.rates().get("xrp"));
+        assertTrue(response.rates().containsKey(ETH));
+        assertTrue(response.rates().containsKey(XRP));
+        assertEquals(BigDecimal.valueOf(30), response.rates().get(ETH));
+        assertEquals(BigDecimal.valueOf(100), response.rates().get(XRP));
     }
 
 }

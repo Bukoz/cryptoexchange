@@ -21,6 +21,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ExchangeForecastServiceTest {
 
+    private static final String BTC = "BTC";
+    private static final String XRP = "XRP";
+    private static final String ETH = "ETH";
     private ExchangeForecastService exchangeForecastService;
     private Map<String, ExchangeResponse.CurrencyExchangeForecast> expectedForecasts;
 
@@ -31,13 +34,13 @@ class ExchangeForecastServiceTest {
     void setUp() {
         exchangeForecastService = new ExchangeForecastService(feeCalculator);
         expectedForecasts = new LinkedHashMap<>();
-        expectedForecasts.put("XRP", ExchangeResponse.CurrencyExchangeForecast.builder()
+        expectedForecasts.put(XRP, ExchangeResponse.CurrencyExchangeForecast.builder()
                 .rate(BigDecimal.valueOf(0.9))
                 .amount(BigDecimal.valueOf(100))
                 .fee(BigDecimal.valueOf(5.00))
                 .result(BigDecimal.valueOf(85.5)) // (100 - 5) * 0.9
                 .build());
-        expectedForecasts.put("ETH", ExchangeResponse.CurrencyExchangeForecast.builder()
+        expectedForecasts.put(ETH, ExchangeResponse.CurrencyExchangeForecast.builder()
                 .rate(BigDecimal.valueOf(110.0))
                 .amount(BigDecimal.valueOf(100))
                 .fee(BigDecimal.valueOf(5.00))
@@ -49,13 +52,13 @@ class ExchangeForecastServiceTest {
     void getCurrencyExchangeForecasts() {
         when(feeCalculator.calculateFee(any(BigDecimal.class))).thenReturn(new BigDecimal("5.00"));
         ExchangeRequest request = new ExchangeRequest(
-                "BTC",
-                List.of("XRP", "ETH"),
+                BTC,
+                List.of(XRP, ETH),
                 BigDecimal.valueOf(100)
         );
         Map<String, BigDecimal> rates = Map.of(
-                "XRP", BigDecimal.valueOf(0.9),
-                "ETH", BigDecimal.valueOf(110.0)
+                XRP, BigDecimal.valueOf(0.9),
+                ETH, BigDecimal.valueOf(110.0)
         );
 
         Map<String, ExchangeResponse.CurrencyExchangeForecast> result =
@@ -68,13 +71,13 @@ class ExchangeForecastServiceTest {
     void getCurrencyExchangeForecastsWhileSameCurrencyIsCalledTwice() {
         when(feeCalculator.calculateFee(any(BigDecimal.class))).thenReturn(new BigDecimal("5.00"));
         ExchangeRequest request = new ExchangeRequest(
-                "BTC",
-                List.of("XRP", "ETH", "XRP"),
+                BTC,
+                List.of(XRP, ETH, XRP),
                 BigDecimal.valueOf(100)
         );
         Map<String, BigDecimal> rates = Map.of(
-                "XRP", BigDecimal.valueOf(0.9),
-                "ETH", BigDecimal.valueOf(110.0)
+                XRP, BigDecimal.valueOf(0.9),
+                ETH, BigDecimal.valueOf(110.0)
         );
 
         Map<String, ExchangeResponse.CurrencyExchangeForecast> result =
