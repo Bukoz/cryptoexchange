@@ -2,7 +2,7 @@ package com.bukoz.cryptoexchange.model;
 
 import java.util.Map;
 
-public record ErrorResponse(
+public record ValidationErrorResponse(
         String message,
         Map<String, String> details) {
 }

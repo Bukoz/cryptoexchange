@@ -2,7 +2,9 @@ package com.bukoz.cryptoexchange.exception;
 
 import com.bukoz.cryptoexchange.exception.external.ExternalApiException;
 import com.bukoz.cryptoexchange.exception.internal.UnsupportedCurrencyException;
-import com.bukoz.cryptoexchange.model.ErrorResponse;
+import com.bukoz.cryptoexchange.model.CurrencyErrorResponse;
+import com.bukoz.cryptoexchange.model.InternalErrorResponse;
+import com.bukoz.cryptoexchange.model.ValidationErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,11 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnsupportedCurrencyException.class)
-    public ResponseEntity<String> handleUnsupportedCoinException(UnsupportedCurrencyException ex) {
+    public ResponseEntity<CurrencyErrorResponse> handleUnsupportedCoinException(UnsupportedCurrencyException ex) {
         log.warn("Unsupported currency exception: {}", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        CurrencyErrorResponse errorResponse = new CurrencyErrorResponse("Currency not found", ex.getMessage());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ExternalApiException.class)
@@ -31,7 +35,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ValidationErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         log.warn("Argument not valid exception: {}", ex.getMessage());
         Map<String, String> errors = new HashMap<>();
 
@@ -41,14 +45,16 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        ErrorResponse errorResponse = new ErrorResponse("Validation failed", errors);
+        ValidationErrorResponse errorResponse = new ValidationErrorResponse("Validation failed", errors);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception ex) {
+    public ResponseEntity<InternalErrorResponse> handleException(Exception ex) {
         log.warn("Exception :{}", ex.getMessage());
-        return new ResponseEntity<>("Internal server error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        InternalErrorResponse response = new InternalErrorResponse("Internal server error", ex.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

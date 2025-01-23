@@ -22,7 +22,7 @@ public class CurrencyService {
             currency = currencyHandler.getByLongName(name.toLowerCase());
         }
         if (currency == null) {
-            throw new UnsupportedCurrencyException(name.toUpperCase() + " currency not found.");
+            throw new UnsupportedCurrencyException(name.toUpperCase() + " currency not supported");
         }
         return currency;
     }
