@@ -1,8 +1,8 @@
 package com.bukoz.cryptoexchange.service;
 
+import com.bukoz.cryptoexchange.domain.CryptoCurrency;
 import com.bukoz.cryptoexchange.exception.internal.UnsupportedCurrencyException;
-import com.bukoz.cryptoexchange.handler.CurrencyHandler;
-import com.bukoz.cryptoexchange.model.CryptoCurrency;
+import com.bukoz.cryptoexchange.externalapi.common.CurrencyHandler;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

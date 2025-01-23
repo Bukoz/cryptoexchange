@@ -1,6 +1,6 @@
 package com.bukoz.cryptoexchange.service;
 
-import com.bukoz.cryptoexchange.model.CryptoCurrency;
+import com.bukoz.cryptoexchange.domain.CryptoCurrency;
 import com.bukoz.cryptoexchange.model.CurrencyRateResponse;
 
 import java.io.IOException;

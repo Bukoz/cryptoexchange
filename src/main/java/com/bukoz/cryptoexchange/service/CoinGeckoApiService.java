@@ -1,7 +1,7 @@
 package com.bukoz.cryptoexchange.service;
 
+import com.bukoz.cryptoexchange.domain.CryptoCurrency;
 import com.bukoz.cryptoexchange.externalapi.coingecko.CoinGeckoCurrencyRateApiClient;
-import com.bukoz.cryptoexchange.model.CryptoCurrency;
 import com.bukoz.cryptoexchange.model.CurrencyRateResponse;
 import com.bukoz.cryptoexchange.util.RateProcessor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
-package com.bukoz.cryptoexchange.handler.external;
+package com.bukoz.cryptoexchange.externalapi.coingecko;
 
-import com.bukoz.cryptoexchange.handler.CurrencyHandler;
-import com.bukoz.cryptoexchange.model.CryptoCurrency;
+import com.bukoz.cryptoexchange.domain.CryptoCurrency;
+import com.bukoz.cryptoexchange.externalapi.common.CurrencyHandler;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

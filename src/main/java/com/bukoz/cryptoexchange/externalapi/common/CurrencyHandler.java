@@ -1,6 +1,6 @@
-package com.bukoz.cryptoexchange.handler;
+package com.bukoz.cryptoexchange.externalapi.common;
 
-import com.bukoz.cryptoexchange.model.CryptoCurrency;
+import com.bukoz.cryptoexchange.domain.CryptoCurrency;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.bukoz.cryptoexchange.controller;
 
-import com.bukoz.cryptoexchange.model.CryptoCurrency;
+import com.bukoz.cryptoexchange.domain.CryptoCurrency;
 import com.bukoz.cryptoexchange.model.CurrencyRateResponse;
 import com.bukoz.cryptoexchange.service.CurrencyRateService;
 import com.bukoz.cryptoexchange.service.CurrencyService;
@@ -15,12 +15,12 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/currencies")
-public class CurrencyController {
+public class CurrencyRateController {
 
     private final CurrencyRateService currencyRateService;
     private final CurrencyService currencyService;
 
-    public CurrencyController(CurrencyRateService currencyService, CurrencyService currencyHandlerService) {
+    public CurrencyRateController(CurrencyRateService currencyService, CurrencyService currencyHandlerService) {
         this.currencyRateService = currencyService;
         this.currencyService = currencyHandlerService;
     }

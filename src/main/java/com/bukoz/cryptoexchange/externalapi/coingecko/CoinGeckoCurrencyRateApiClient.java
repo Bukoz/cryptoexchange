@@ -1,8 +1,8 @@
 package com.bukoz.cryptoexchange.externalapi.coingecko;
 
+import com.bukoz.cryptoexchange.domain.CryptoCurrency;
 import com.bukoz.cryptoexchange.exception.external.ExternalApiException;
-import com.bukoz.cryptoexchange.externalapi.CurrencyRateApiClient;
-import com.bukoz.cryptoexchange.model.CryptoCurrency;
+import com.bukoz.cryptoexchange.externalapi.common.CurrencyRateApiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
