@@ -7,9 +7,9 @@ spring:
 
 external:
   api:
-    url:
-      price: https://api.coingecko.com/api/v3/simple/price
-      supported-currencies: https://api.coingecko.com/api/v3/simple/supported_vs_currencies
+    coingecko:
+      url:
+        price: https://api.coingecko.com/api/v3/simple/price
 
 fee:
   percentage: 0.01

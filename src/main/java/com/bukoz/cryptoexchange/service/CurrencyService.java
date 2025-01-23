@@ -17,6 +17,7 @@ public class CurrencyService {
     }
 
     public CryptoCurrency getCurrency(String name) {
+        // mapping currency based on the short/long name
         CryptoCurrency currency = currencyHandler.getByShortName(name.toUpperCase());
         if (currency == null) {
             currency = currencyHandler.getByLongName(name.toLowerCase());

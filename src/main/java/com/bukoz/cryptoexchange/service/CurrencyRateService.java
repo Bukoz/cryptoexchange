@@ -18,6 +18,9 @@ public class CurrencyRateService {
     }
 
     public CurrencyRateResponse getCurrencyRates(CryptoCurrency baseCurrency, List<CryptoCurrency> filters) throws IOException, URISyntaxException {
+        if (filters.isEmpty()) {
+            throw new IllegalArgumentException("Filter list should not be empty");
+        }
         List<String> filterShortNames = filters.stream().map(CryptoCurrency::shortName).toList();
         return externalApiService.fetchRates(baseCurrency, filterShortNames);
     }

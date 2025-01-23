@@ -51,7 +51,7 @@ public class ExchangeController {
     })
     @PostMapping("/exchange")
     public ResponseEntity<ExchangeResponse> getExchange(@RequestBody @Valid ExchangeRequest request) throws IOException, URISyntaxException {
-        log.info("Currency exchange POST call");
+        log.debug("Currency exchange POST call");
         ExchangeResponse response = exchangeService.getExchange(request);
         return ResponseEntity.ok(response);
     }

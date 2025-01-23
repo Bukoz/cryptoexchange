@@ -15,32 +15,25 @@ import java.util.Map;
 @Component
 public class CoinGeckoCurrencyRateApiClient implements CurrencyRateApiClient {
 
-    @Value("${external.api.url.price}")
-    private String priceApiUrl;
-
     private final RestTemplate restTemplate;
+    private final String apiUrl;
 
-    public CoinGeckoCurrencyRateApiClient(RestTemplate restTemplate) {
+    public CoinGeckoCurrencyRateApiClient(RestTemplate restTemplate, @Value("${external.api.coingecko.url.price}") String apiUrl) {
         this.restTemplate = restTemplate;
+        this.apiUrl = apiUrl;
     }
 
     public Map<String, Object> fetchRates(CryptoCurrency currency, List<String> filters) {
-        String url = buildPriceApiUrl(currency.longName(), filters);
+        String url = CoinGeckoPriceApiHelper.buildPriceApiUrl(currency.longName(), filters, apiUrl);
 
         @SuppressWarnings("unchecked")
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
         if (response == null || !response.containsKey(currency.longName())) {
-            log.warn("External API returned an empty response for the URL {}", url);
+            log.debug("External API returned an empty response for the URL {}", url);
             throw new ExternalApiException("Received empty response from external API");
         }
 
         return response;
     }
 
-    private String buildPriceApiUrl(String currency, List<String> filters) {
-        String filterString = filters.isEmpty() ? "" : String.join(",", filters).toLowerCase();
-        return String.format("%s?ids=%s&vs_currencies=%s", priceApiUrl, currency, filterString);
-    }
 }
-
-

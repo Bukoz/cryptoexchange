@@ -4,16 +4,12 @@ import com.bukoz.cryptoexchange.domain.CryptoCurrency;
 import com.bukoz.cryptoexchange.externalapi.coingecko.CoinGeckoCurrencyRateApiClient;
 import com.bukoz.cryptoexchange.model.CurrencyRateResponse;
 import com.bukoz.cryptoexchange.util.RateProcessor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Service
 public class CoinGeckoApiService implements ExternalApiService {
 
@@ -25,7 +21,7 @@ public class CoinGeckoApiService implements ExternalApiService {
         this.rateProcessor = rateProcessor;
     }
 
-    public CurrencyRateResponse fetchRates(CryptoCurrency currency, List<String> filters) throws IOException, URISyntaxException {
+    public CurrencyRateResponse fetchRates(CryptoCurrency currency, List<String> filters) {
         Map<String, Object> response = apiClient.fetchRates(currency, filters);
 
         @SuppressWarnings("unchecked")
