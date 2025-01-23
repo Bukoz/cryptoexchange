@@ -22,7 +22,7 @@ public class CoinGeckoCurrencyHandler implements CurrencyHandler {
         addCurrency("BCH", "bitcoin-cash");
         addCurrency("BNB", "binancecoin");
         addCurrency("EOS", "eos");
-        addCurrency("XRP", "xrp");
+        addCurrency("XRP", "ripple");
         addCurrency("XLM", "stellar");
         addCurrency("LINK", "chainlink");
         addCurrency("DOT", "polkadot");

@@ -12,6 +12,7 @@ import java.util.Map;
 public class ExchangeResponse {
     private String from;
     private Map<String, CurrencyExchangeForecast> forecasts;
+    private String note;
 
     @Builder
     @Getter
