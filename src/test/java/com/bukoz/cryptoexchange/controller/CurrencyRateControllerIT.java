@@ -95,8 +95,8 @@ class CurrencyRateControllerIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.message").value("Currency not found"))
-                .andExpect(jsonPath("$.detail").exists())
-                .andExpect(jsonPath("$.detail").value("testCurrency not supported"));
+                .andExpect(jsonPath("$.details").exists())
+                .andExpect(jsonPath("$.details").value("testCurrency not supported"));
     }
 
 }

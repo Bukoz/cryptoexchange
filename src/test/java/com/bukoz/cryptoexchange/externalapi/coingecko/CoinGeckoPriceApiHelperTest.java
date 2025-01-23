@@ -26,7 +26,7 @@ class CoinGeckoPriceApiHelperTest {
     @Test
     void buildPriceApiUrlWithNoFilters() {
         String currency = "bitcoin";
-        List<String> filters = new ArrayList<>(); // No filters
+        List<String> filters = new ArrayList<>();
         String expectedUrl = "fake-api/price?ids=bitcoin&vs_currencies=";
 
         String resultUrl = CoinGeckoPriceApiHelper.buildPriceApiUrl(currency, filters, API_URL);

@@ -87,7 +87,7 @@ class ExchangeControllerIT {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Currency not found"))
-                .andExpect(jsonPath("$.detail").value("testCurrency not found"));
+                .andExpect(jsonPath("$.details").value("testCurrency not found"));
     }
 
     @Test
@@ -101,6 +101,6 @@ class ExchangeControllerIT {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message").value("Internal server error"))
-                .andExpect(jsonPath("$.detail").value("Unexpected error"));
+                .andExpect(jsonPath("$.details").value("Unexpected error"));
     }
 }
